@@ -1,0 +1,13 @@
+{
+    "namespace": "com.pavanpkulkarni.schema",
+     "type": "record",
+     "name": "User",
+     "fields":[
+         {
+            "name": "id", "type": "int"
+         },
+         {
+            "name": "name",  "type": "string"
+         }
+     ]
+}
