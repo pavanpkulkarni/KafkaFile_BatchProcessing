@@ -61,20 +61,3 @@ class KafkaFileProducer(val topic: String, val propertyFile: String) {
     }
   }
 }
-
-
-/*
-
-POints to note:
-1. topic creating not required.. code will create topic
-2. running confluent <> command works.. but we will have no control over log directory.. also, cannot build multi-broker kafka node
-3. Added logic to consumer to poll for 2seconds for any incoming messages... wait 10 times (for 2 seconds each) to read new messages. if nothing happens, close consumer
-
-*/
-
-//TODO: Fix Control centre code - Done
-//TODO: Check confluent <> command - Done
-//TODO: run command centre - Done
-//TODO: runs as jars - Check again
-//TODO: multi broker setup - Done
-//TODO: Create external config file - done
