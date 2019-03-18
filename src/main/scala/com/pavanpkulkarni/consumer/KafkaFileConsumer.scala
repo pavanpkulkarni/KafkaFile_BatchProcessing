@@ -6,7 +6,6 @@ import java.io.{BufferedWriter, File, FileWriter}
 import java.util.Properties
 import org.apache.kafka.clients.consumer.KafkaConsumer
 import java.util.Collections
-import com.pavanpkulkarni.schema.User
 import com.typesafe.config.ConfigFactory
 import org.apache.kafka.common.errors.TimeoutException
 import io.confluent.kafka.serializers.KafkaAvroDeserializer
@@ -14,6 +13,7 @@ import org.apache.kafka.clients.consumer.ConsumerRecord
 import org.apache.kafka.clients.consumer.ConsumerRecords
 import org.apache.kafka.common.serialization.StringDeserializer
 import org.apache.log4j.Logger
+import com.pavanpkulkarni.schema.User
 
 class KafkaFileConsumer(val topic: String, val propertyFile: String) {
 
@@ -63,8 +63,14 @@ class KafkaFileConsumer(val topic: String, val propertyFile: String) {
           val record : ConsumerRecord[String, User] = it.next()
           println("Message : ( Key -> " + record.key() + " Value -> " + record.value() + " Topic Name -> " + record.topic() + " Offset -> " + record.offset() + " Partition -> " + record.partition() + " ) ")
 
-          println("Writing to file --> " + record.value().id + "," + record.value().name)
-          writer.write(record.value().id + " ----> " + record.value().name + "\n")
+          val id = record.value().id.getOrElse(9999999)
+          // Added logic to handle null values in CSV file
+          val name = {
+            if (record.value().name.get.toString == "") "Default Name"
+            else record.value().name.get.toString
+          }
+          println("Writing to file --> " + id + "," + name)
+          writer.write(id + " ----> " + name + "\n")
 
           consumer.commitSync()
         }
@@ -78,9 +84,6 @@ class KafkaFileConsumer(val topic: String, val propertyFile: String) {
         }
         else
           counter = 0
-
-
-
       }
 
   }catch {

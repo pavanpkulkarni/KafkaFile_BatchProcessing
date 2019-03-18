@@ -3,14 +3,16 @@ package com.pavanpkulkarni.producer
 import java.io.File
 import java.util.{Properties, UUID}
 
+import com.pavanpkulkarni.schema.User
 import io.confluent.kafka.serializers.KafkaAvroSerializer
 import org.apache.kafka.clients.producer.{KafkaProducer, ProducerRecord}
 import org.apache.kafka.common.serialization.StringSerializer
-import com.pavanpkulkarni.schema.User
 
 import scala.io.Source
 import com.typesafe.config.ConfigFactory
 import org.apache.log4j.Logger
+
+import scala.util.Try
 
 
 class KafkaFileProducer(val topic: String, val propertyFile: String) {
@@ -33,7 +35,7 @@ class KafkaFileProducer(val topic: String, val propertyFile: String) {
   if(propertyConfs.getString("kafkaJobProperties.kafkaCommon.enable.monitoring").equalsIgnoreCase("yes"))
     props.put("interceptor.classes", propertyConfs.getString("kafkaJobProperties.producerProperties.interceptor.classes") )
 
-  private val producer =   new KafkaProducer[String,User](props)
+    private val producer =   new KafkaProducer[String,User](props)
 
   def send(): Unit = {
     try {
@@ -44,9 +46,12 @@ class KafkaFileProducer(val topic: String, val propertyFile: String) {
       val lines = Source.fromFile(inputFilename).getLines()
       lines.foreach { line =>
 
-        val record: Array[String] = line.split(",").map(_.trim)
+        val record: Array[String] = line.split(",",-1).map(_.trim)
 
-        val itemToSend = User(record(0).toInt, record(1))
+        val id = Try(record(0).toInt).toOption
+        val name = Option(record(1))
+
+        val itemToSend = User(id, name)
 
         println(s"Producer sending data ${itemToSend.toString}")
         producer.send(new ProducerRecord[String, User](topic, itemToSend))
