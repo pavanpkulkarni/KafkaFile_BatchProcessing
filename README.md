@@ -7,7 +7,8 @@ This program is to read a CSV file and write it to target location by applying a
 This project can also serve as point of reference in addressing several other funcationalties like:
 1. Setting up a multi-broker Kafka cluster using script - [stop-start-scripts.sh](https://github.com/pavanpkulkarni/KafkaFile_BatchProcessing/blob/master/stop-start-scripts.sh)
 2. Converting Avro type to .txt file using Kafka Consumer
-3. Terminate Kafka Consumer if no data is polled for x seconds  
+3. Terminate Kafka Consumer if no data is polled for x seconds 
+4. Enable WebUI monitioring for Kafka topics and brokers
 
 ## Prerequisites
 1. Confluent Kafka 5.X.X
